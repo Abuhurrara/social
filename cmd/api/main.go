@@ -1,8 +1,9 @@
 package main
 
 import (
+	"github.com/Abuhurrara/social/internal/db"
 	"github.com/Abuhurrara/social/internal/env"
-	store2 "github.com/Abuhurrara/social/internal/store"
+	"github.com/Abuhurrara/social/internal/store"
 	"github.com/joho/godotenv"
 	"log"
 )
@@ -13,8 +14,6 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	store := store2.NewStorage(nil)
-
 	cfg := config{
 		address: env.GetString("ADDR", ":8080"),
 		db: dbConfig{
@@ -24,6 +23,13 @@ func main() {
 			maxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15min"),
 		},
 	}
+
+	db, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	store := store.NewStorage(db)
 
 	app := &application{
 		config: cfg,

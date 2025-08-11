@@ -1,3 +1,4 @@
+include .env
 # Config
 DB_MIGRATOR_ADDR ?= $(DB_ADDR) # Read from env
 MIGRATION_PATH = ./cmd/migrate/migrations
@@ -8,8 +9,8 @@ migration:
 
 .PHONY: migrate-up
 migrate-up:
-	@migrate -path=$(MIGRATION_PATH) -database="$(DB_MIGRATOR_ADDR)" up
+	@migrate -path=$(MIGRATION_PATH) -database=$(DB_MIGRATOR_ADDR) up
 
 .PHONY: migrate-down
 migrate-down:
-	@migrate -path=$(MIGRATION_PATH) -database="$(DB_MIGRATOR_ADDR)" down $(filter-out $@,$(MAKECMDGOALS))
+	@migrate -path=$(MIGRATION_PATH) -database=$(DB_MIGRATOR_ADDR) down $(filter-out $@,$(MAKECMDGOALS))

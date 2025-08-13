@@ -62,8 +62,8 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//if err := writeJson(w, http.StatusOK, post); err != nil {
-	//	writeJSONError(w, http.StatusInternalServerError, err.Error())
-	//	return
-	//}
+	if err := writeJson(w, http.StatusOK, post); err != nil {
+		writeJSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 }

@@ -16,13 +16,17 @@ type Storage struct {
 	}
 	Posts interface {
 		Create(ctx context.Context, post *Posts) error
-		GetByID(ctx context.Context, postID int64) (*Posts, error)
+		GetByID(context.Context, int64) (*Posts, error)
+	}
+	Comments interface {
+		GetByPostID(context.Context, int64) ([]Comment, error)
 	}
 }
 
 func NewStorage(db *sql.DB) Storage {
 	return Storage{
-		Users: &UserStore{db},
-		Posts: &PostStore{db},
+		Users:    &UserStore{db},
+		Posts:    &PostStore{db},
+		Comments: &CommentStore{db},
 	}
 }

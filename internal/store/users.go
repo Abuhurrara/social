@@ -5,11 +5,11 @@ import (
 	"database/sql"
 )
 
-type Users struct {
+type User struct {
 	ID        string `json:"id"`
 	Username  string `json:"name"`
 	Email     string `json:"email"`
-	Password  string `json:"_"`
+	Password  string `json:"-"`
 	CreatedAt string `json:"created_at"`
 }
 
@@ -17,7 +17,7 @@ type UserStore struct {
 	db *sql.DB
 }
 
-func (s *UserStore) Create(ctx context.Context, user *Users) error {
+func (s *UserStore) Create(ctx context.Context, user *User) error {
 	query := `
 INSERT INTO users (username, password, email) VALUS($1, $2, $3) RETURNING id, created_at
 `

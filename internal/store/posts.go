@@ -9,14 +9,14 @@ import (
 )
 
 type Posts struct {
-	ID        int64     `json:"id"`
-	Content   string    `json:"content"`
-	Title     string    `json:"title"`
-	UserID    int64     `json:"user_id"`
-	Tags      []string  `json:"tags"`
-	CreatedAt string    `json:"created_at"`
-	UpdatedAt string    `json:"updated_at"`
-	Comments  []Comment `json:"comments"`
+	ID        int64      `json:"id"`
+	Content   string     `json:"content"`
+	Title     string     `json:"title"`
+	UserID    int64      `json:"user_id"`
+	Tags      []string   `json:"tags"`
+	CreatedAt string     `json:"created_at"`
+	UpdatedAt string     `json:"updated_at"`
+	Comments  []Comments `json:"comments"`
 }
 type PostStore struct {
 	db *sql.DB
@@ -59,7 +59,7 @@ func (s *PostStore) GetByID(ctx context.Context, postId int64) (*Posts, error) {
 		&post.UserID,
 		&post.CreatedAt,
 		&post.UpdatedAt,
-		pq.Array(post.Tags),
+		pq.Array(&post.Tags),
 	)
 	if err != nil {
 		switch {

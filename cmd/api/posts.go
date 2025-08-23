@@ -10,6 +10,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+type postKey string
+
+const postCtxKey postKey = "post"
+
 type CreatePostPayload struct {
 	Title   string   `json:"title" validate:"required,max=100"`
 	Content string   `json:"content" validate:"required,max=1000"`
@@ -118,13 +122,13 @@ func (app *application) postContextMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx = context.WithValue(ctx, "post", post)
+		ctx = context.WithValue(ctx, postCtxKey, post)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 func getPostFromContext(r *http.Request) *store.Posts {
-	post, _ := r.Context().Value("post").(*store.Posts)
+	post, _ := r.Context().Value(postCtxKey).(*store.Posts)
 
 	return post
 }

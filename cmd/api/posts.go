@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -94,8 +93,8 @@ func (app *application) deletePostHandler(w http.ResponseWriter, r *http.Request
 }
 
 type UploadPostPayload struct {
-	Title   string `json:"title" validate:"omitempty,max=100"`
-	Content string `json:"content" validate:"omitempty,max=1000"`
+	Title   *string `json:"title" validate:"omitempty,max=100"`
+	Content *string `json:"content" validate:"omitempty,max=1000"`
 }
 
 func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -112,17 +111,15 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	fmt.Printf("%v", payload)
-
 	// Api should consume the store but the store should not consume the data structure
 	// so we have to map the payload to post struct and pass it into db func
-	//if payload.Title != nil {
-	//	post.Title = payload.Title
-	//}
-	//
-	//if payload.Content != "" {
-	//	post.Content = payload.Content
-	//}
+	if payload.Title != nil {
+		post.Title = *payload.Title
+	}
+
+	if payload.Content != nil {
+		post.Content = *payload.Content
+	}
 
 	err := app.store.Posts.Update(r.Context(), post)
 	if err != nil {

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -55,6 +56,8 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 
 func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromContext(r)
+
+	fmt.Println(post)
 
 	comments, err := app.store.Comments.GetByPostID(r.Context(), post.ID)
 	if err != nil {
@@ -123,7 +126,12 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 
 	err := app.store.Posts.Update(r.Context(), post)
 	if err != nil {
-		app.internalServerError(w, r, err)
+		switch {
+		case errors.Is(err, store.ErrNotFound):
+			app.notFoundResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
 		return
 	}
 

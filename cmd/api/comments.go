@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"github.com/Abuhurrara/social/internal/store"
 	"net/http"
 )
@@ -42,8 +41,6 @@ func (app *application) createCommentHandler(w http.ResponseWriter, r *http.Requ
 		Content: payload.Content,
 		UserID:  post.UserID,
 	}
-
-	fmt.Println(comment)
 
 	if err := app.store.Comments.Create(r.Context(), comment); err != nil {
 		app.internalServerError(w, r, err)

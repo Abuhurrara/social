@@ -13,7 +13,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	defer conn.Close()
 
 	store := store2.NewStorage(conn)

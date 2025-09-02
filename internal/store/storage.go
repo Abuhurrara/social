@@ -14,6 +14,7 @@ var (
 
 type Storage struct {
 	Users interface {
+		GetByID(context.Context, int64) (*User, error)
 		Create(ctx context.Context, user *User) error
 	}
 	Posts interface {

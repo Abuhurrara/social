@@ -35,8 +35,9 @@ type Storage struct {
 
 func NewStorage(db *sql.DB) Storage {
 	return Storage{
-		Users:    &UserStore{db},
-		Posts:    &PostStore{db},
-		Comments: &CommentsStore{db},
+		Users:     &UserStore{db},
+		Posts:     &PostStore{db},
+		Comments:  &CommentsStore{db},
+		Followers: &FollowerStore{db},
 	}
 }

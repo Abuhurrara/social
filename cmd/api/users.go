@@ -22,7 +22,28 @@ func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {}
+type FollowUser struct {
+	UserID string `json:"user_id"`
+}
+
+func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {
+	followerUser := getUserFromContext(r)
+
+	var payload FollowUser
+	if err := readJson(w, r, &payload); err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	ctx := r.Context()
+
+	app.store.Users.Follow(ctx, followerUser.ID, payload.UserID)
+
+	if err := app.JsonResponse(w, http.StatusNoContent, nil); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+}
 
 func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Request) {}
 

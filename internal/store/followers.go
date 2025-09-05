@@ -3,6 +3,8 @@ package store
 import (
 	"context"
 	"database/sql"
+	"errors"
+	"github.com/lib/pq"
 )
 
 type follower struct {
@@ -23,6 +25,12 @@ func (s *FollowerStore) Follow(ctx context.Context, followerID, userID int64) er
 	defer cancel()
 
 	_, err := s.db.ExecContext(ctx, query, userID, followerID)
+	if err != nil {
+		var pgErr *pq.Error
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return ErrConflict
+		}
+	}
 	return err
 }
 

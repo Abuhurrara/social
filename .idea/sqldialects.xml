@@ -7,6 +7,7 @@
     <file url="file://$PROJECT_DIR$/cmd/migrate/migrations/000004_alter_posts_table_with_tags.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/cmd/migrate/migrations/000005_add_comments.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/cmd/migrate/migrations/000007_add_followers_table.up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/cmd/migrate/migrations/000008_add_indexes.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/internal/store/comments.go" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/scripts/db_init.sql" dialect="PostgreSQL" />
   </component>

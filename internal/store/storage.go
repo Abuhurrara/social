@@ -19,10 +19,11 @@ type Storage struct {
 		Create(ctx context.Context, user *User) error
 	}
 	Posts interface {
-		Create(ctx context.Context, post *Posts) error
-		GetByID(context.Context, int64) (*Posts, error)
+		Create(ctx context.Context, post *Post) error
+		GetByID(context.Context, int64) (*Post, error)
 		Delete(context.Context, int64) error
-		Update(context.Context, *Posts) error
+		Update(context.Context, *Post) error
+		GetUserFeed(context.Context, int64) ([]*PostWithMetadata, error)
 	}
 	Comments interface {
 		Create(context.Context, *Comments) error

@@ -64,7 +64,11 @@ func (app *application) mount() http.Handler {
 
 				// /v1/users/12/follow
 				// /v1/users/12/unfollow
+			})
 
+			r.Group(func(r chi.Router) {
+				// /v1/users/feed
+				r.Get("/feed", app.getUserFeed)
 			})
 		})
 	})

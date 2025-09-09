@@ -33,7 +33,7 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	post := &store.Posts{
+	post := &store.Post{
 		Title:   payload.Title,
 		Content: payload.Content,
 		Tags:    payload.Tags,
@@ -167,8 +167,8 @@ func (app *application) postContextMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func getPostFromContext(r *http.Request) *store.Posts {
-	post, _ := r.Context().Value(postCtxKey).(*store.Posts)
+func getPostFromContext(r *http.Request) *store.Post {
+	post, _ := r.Context().Value(postCtxKey).(*store.Post)
 
 	return post
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/lib/pq"
 )
 
-type Posts struct {
+type Post struct {
 	ID        int64      `json:"id"`
 	Content   string     `json:"content"`
 	Title     string     `json:"title"`
@@ -17,12 +17,48 @@ type Posts struct {
 	UpdatedAt string     `json:"updated_at"`
 	Version   int        `json:"version"`
 	Comments  []Comments `json:"comments"`
+	User      User       `json:"user"`
+}
+
+type PostWithMetadata struct {
+	Post
+	CommentsCount int `json:"comments_count"`
 }
 type PostStore struct {
 	db *sql.DB
 }
 
-func (s *PostStore) Create(ctx context.Context, post *Posts) error {
+func (s *PostStore) GetUserFeed(ctx context.Context, id int64) ([]*PostWithMetadata, error) {
+	query := `
+		SELECT
+		  p.id,
+		  p.content,
+		  p.title,
+		  p.created_at,
+		  p.user_id,
+		  p.version,
+		  p.tags,
+		  u.username,
+		  count(c.id) AS comments_count
+		FROM
+		  posts p
+		  LEFT JOIN comments c ON c.post_id = p.id
+		  LEFT JOIN users u ON p.user_id = u.id
+		  JOIN followers f ON f.follower_id = p.user_id
+		  OR p.user_id = $1
+		WHERE
+		  f.user_id = $1
+		  OR p.user_id = $1
+		GROUP BY
+		  p.id,
+		  u.username
+		ORDER BY
+		  p.created_at DESC
+
+`
+}
+
+func (s *PostStore) Create(ctx context.Context, post *Post) error {
 	query := `
 		INSERT INTO posts (content, title, user_id, tags)
 		VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at
@@ -48,7 +84,7 @@ func (s *PostStore) Create(ctx context.Context, post *Posts) error {
 	return nil
 }
 
-func (s *PostStore) GetByID(ctx context.Context, postId int64) (*Posts, error) {
+func (s *PostStore) GetByID(ctx context.Context, postId int64) (*Post, error) {
 	query := `
 		SELECT id, content, title, user_id, created_at, updated_at, tags, version
 		FROM posts
@@ -57,7 +93,7 @@ func (s *PostStore) GetByID(ctx context.Context, postId int64) (*Posts, error) {
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	var post Posts
+	var post Post
 	err := s.db.QueryRowContext(ctx, query, postId).Scan(
 		&post.ID,
 		&post.Content,
@@ -105,7 +141,7 @@ func (s *PostStore) Delete(ctx context.Context, postId int64) error {
 	return nil
 }
 
-func (s *PostStore) Update(ctx context.Context, post *Posts) error {
+func (s *PostStore) Update(ctx context.Context, post *Post) error {
 	query := `
 		UPDATE posts
 		SET content = $1, title = $2, version = version + 1

@@ -28,7 +28,7 @@ type PostStore struct {
 	db *sql.DB
 }
 
-func (s *PostStore) GetUserFeed(ctx context.Context, id int64) ([]*PostWithMetadata, error) {
+func (s *PostStore) GetUserFeed(ctx context.Context, userId int64) ([]*PostWithMetadata, error) {
 	query := `
 		SELECT
 		  p.id,
@@ -56,6 +56,25 @@ func (s *PostStore) GetUserFeed(ctx context.Context, id int64) ([]*PostWithMetad
 		  p.created_at DESC
 
 `
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	rows, err := s.db.QueryContext(ctx, query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var feed []*PostWithMetadata
+	for rows.Next() {
+		var post PostWithMetadata
+		err := rows.Scan()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 }
 
 func (s *PostStore) Create(ctx context.Context, post *Post) error {

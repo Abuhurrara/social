@@ -28,7 +28,7 @@ type PostStore struct {
 	db *sql.DB
 }
 
-func (s *PostStore) GetUserFeed(ctx context.Context, userId int64) ([]*PostWithMetadata, error) {
+func (s *PostStore) GetUserFeed(ctx context.Context, userId int64) ([]PostWithMetadata, error) {
 	query := `
 		SELECT
 		  p.id,
@@ -66,15 +66,28 @@ func (s *PostStore) GetUserFeed(ctx context.Context, userId int64) ([]*PostWithM
 	}
 	defer rows.Close()
 
-	var feed []*PostWithMetadata
+	var feed []PostWithMetadata
 	for rows.Next() {
-		var post PostWithMetadata
-		err := rows.Scan()
+		var p PostWithMetadata
+		err := rows.Scan(
+			&p.ID,
+			&p.Content,
+			&p.Title,
+			&p.CreatedAt,
+			&p.UserID,
+			&p.Version,
+			pq.Array(&p.Tags),
+			&p.User.Username,
+			&p.CommentsCount,
+		)
 		if err != nil {
 			return nil, err
 		}
+
+		feed = append(feed, &p)
 	}
 
+	return feed, nil
 }
 
 func (s *PostStore) Create(ctx context.Context, post *Post) error {

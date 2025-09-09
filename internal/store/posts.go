@@ -84,7 +84,7 @@ func (s *PostStore) GetUserFeed(ctx context.Context, userId int64) ([]PostWithMe
 			return nil, err
 		}
 
-		feed = append(feed, &p)
+		feed = append(feed, p)
 	}
 
 	return feed, nil

@@ -22,4 +22,20 @@ func (fq PaginatedFeedQuery) Parse(r *http.Request) (PaginatedFeedQuery, error) 
 		}
 		fq.Limit = l
 	}
+
+	offset := qs.Get("offset")
+	if offset != "" {
+		o, err := strconv.Atoi(offset)
+		if err != nil {
+			return fq, err
+		}
+		fq.Offset = o
+	}
+
+	sort := qs.Get("sort")
+	if sort != "" {
+		fq.Sort = sort
+	}
+
+	return fq, nil
 }

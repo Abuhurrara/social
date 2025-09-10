@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/Abuhurrara/social/internal/store"
 	"net/http"
 )
@@ -25,8 +24,6 @@ func (app *application) getUserFeed(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-
-	fmt.Println("tags", fq.Tags)
 
 	feed, err := app.store.Posts.GetUserFeed(ctx, int64(4), fq)
 	if err != nil {

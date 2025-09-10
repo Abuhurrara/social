@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/lib/pq"
 )
 
@@ -61,8 +60,6 @@ func (s *PostStore) GetUserFeed(ctx context.Context, userId int64, fq PaginatedF
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
-
-	fmt.Println("query", pq.Array(fq.Tags))
 
 	rows, err := s.db.QueryContext(ctx, query, userId, fq.Limit, fq.Offset, fq.Search, pq.Array(fq.Tags))
 	if err != nil {

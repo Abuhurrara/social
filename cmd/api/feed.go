@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/Abuhurrara/social/internal/store"
 	"net/http"
+
+	"github.com/Abuhurrara/social/internal/store"
 )
 
 func (app *application) getUserFeed(w http.ResponseWriter, r *http.Request) {

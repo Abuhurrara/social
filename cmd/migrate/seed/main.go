@@ -1,10 +1,11 @@
 package main
 
 import (
+	"log"
+
 	"github.com/Abuhurrara/social/internal/db"
 	"github.com/Abuhurrara/social/internal/env"
 	store2 "github.com/Abuhurrara/social/internal/store"
-	"log"
 )
 
 func main() {

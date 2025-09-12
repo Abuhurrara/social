@@ -3,9 +3,10 @@ package db
 import (
 	"context"
 	"fmt"
-	"github.com/Abuhurrara/social/internal/store"
 	"log"
 	"math/rand"
+
+	"github.com/Abuhurrara/social/internal/store"
 )
 
 var usernames = []string{

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"go.uber.org/zap"
 	"log"
+
+	"go.uber.org/zap"
 
 	"github.com/Abuhurrara/social/internal/db"
 	"github.com/Abuhurrara/social/internal/env"

@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"go.uber.org/zap"
 	"net/http"
 	"time"
+
+	"go.uber.org/zap"
 
 	"github.com/Abuhurrara/social/docs"
 	"github.com/Abuhurrara/social/internal/store"
@@ -98,7 +99,7 @@ func (app *application) run(mux http.Handler) error {
 		IdleTimeout:  time.Minute,
 	}
 
-	fmt.Printf("Server is listening on %s\n", app.config.address)
+	app.logger.Infow("Server is listening on", "address", app.config.address, "env", app.config.env)
 
 	return srv.ListenAndServe()
 }

@@ -148,7 +148,7 @@ type UploadPostPayload struct {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id		path		int					true	"Post ID"
-//	@Param			payload	body		UpdatePostPayload	true	"Post payload"
+//	@Param			payload	body		UploadPostPayload	true	"Post payload"
 //	@Success		200		{object}	store.Post
 //	@Failure		400		{object}	error
 //	@Failure		401		{object}	error

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/Abuhurrara/social/docs"
 	"github.com/Abuhurrara/social/internal/store"
 	"github.com/go-chi/chi/v5"
@@ -15,6 +17,7 @@ import (
 type application struct {
 	config config
 	store  store.Storage
+	logger *zap.SugaredLogger
 }
 type config struct {
 	address string
@@ -96,7 +99,7 @@ func (app *application) run(mux http.Handler) error {
 		IdleTimeout:  time.Minute,
 	}
 
-	fmt.Printf("Server is listening on %s\n", app.config.address)
+	app.logger.Infow("Server is listening on", "address", app.config.address, "env", app.config.env)
 
 	return srv.ListenAndServe()
 }

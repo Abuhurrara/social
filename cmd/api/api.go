@@ -80,6 +80,11 @@ func (app *application) mount() http.Handler {
 				// /v1/users/feed
 				r.Get("/feed", app.getUserFeed)
 			})
+
+			// public routes
+			r.Route("authentication", func(r chi.Router) {
+				r.Post("/user", app.registerUserHandler)
+			})
 		})
 	})
 

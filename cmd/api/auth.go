@@ -53,7 +53,12 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	ctx := r.Context()
+
 	// store the user
+	err := app.store.Users.CreateAndInvite(ctx, user, "token-123")
+
+	// send email and rollback if fails
 
 	if err := app.JsonResponse(w, http.StatusCreated, nil); err != nil {
 		app.internalServerError(w, r, err)

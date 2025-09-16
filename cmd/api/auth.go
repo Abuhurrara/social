@@ -1,10 +1,13 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 
 	"github.com/Abuhurrara/social/internal/store"
+	"github.com/google/uuid"
 )
 
 type RegisterUserPayload struct {
@@ -55,8 +58,13 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 
 	ctx := r.Context()
 
+	plainToken := uuid.New().String()
+
+	hash := sha256.Sum256([]byte(plainToken))
+	hashToken := hex.EncodeToString(hash[:])
+
 	// store the user
-	err := app.store.Users.CreateAndInvite(ctx, user, "token-123", app.config.mail.exp)
+	err := app.store.Users.CreateAndInvite(ctx, user, hashToken, app.config.mail.exp)
 	if err != nil {
 		switch err {
 		case store.ErrDuplicateEmail:

@@ -16,8 +16,8 @@ var (
 type Storage struct {
 	Users interface {
 		GetByID(context.Context, int64) (*User, error)
-		Create(ctx context.Context, user *User) error
-		CreateAndInvite(ctx context.Context, user *User, token string) error
+		Create(context.Context, *sql.Tx, *User) error
+		CreateAndInvite(ctx context.Context, user *User, token string, invitationExp time.Duration) error
 	}
 	Posts interface {
 		Create(ctx context.Context, post *Post) error

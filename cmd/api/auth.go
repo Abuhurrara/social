@@ -56,7 +56,18 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	ctx := r.Context()
 
 	// store the user
-	err := app.store.Users.CreateAndInvite(ctx, user, "token-123")
+	err := app.store.Users.CreateAndInvite(ctx, user, "token-123", app.config.mail.exp)
+	if err != nil {
+		switch err {
+		case store.ErrDuplicateEmail:
+			app.badRequestResponse(w, r, err)
+		case store.ErrDuplicateUsername:
+			app.badRequestResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
+		return
+	}
 
 	// send email and rollback if fails
 

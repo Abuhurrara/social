@@ -44,3 +44,17 @@ func NewStorage(db *sql.DB) Storage {
 		Followers: &FollowerStore{db},
 	}
 }
+
+func withTx(db *sql.DB, ctx context.Context, f func(*sql.Tx) error) error {
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	if err := f(tx); err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
+}

@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"net/http"
 
 	"github.com/Abuhurrara/social/internal/store"
@@ -35,13 +34,10 @@ type UserWithToken struct {
 //	@Router			/authentication/user [post]
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
 	var payload RegisterUserPayload
-	fmt.Println("Payload CHECK1", payload)
 	if err := readJson(w, r, &payload); err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
-
-	fmt.Println("Payload CHECK2", payload)
 
 	if err := Validate.Struct(payload); err != nil {
 		app.badRequestResponse(w, r, err)
@@ -52,8 +48,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		Username: payload.Username,
 		Email:    payload.Email,
 	}
-
-	fmt.Println("user CHECK3", user)
 
 	// hash the password
 	if err := user.Password.Set(payload.Password); err != nil {
@@ -87,7 +81,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		Token: plainToken,
 	}
 
-	// send email and rollback if fails
+	// TODO: send email and rollback if fails
 
 	if err := app.JsonResponse(w, http.StatusCreated, userWithToken); err != nil {
 		app.internalServerError(w, r, err)

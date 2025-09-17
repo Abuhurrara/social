@@ -119,20 +119,20 @@ func (s *UserStore) CreateAndInvite(ctx context.Context, user *User, token strin
 
 func (s *UserStore) Activate(ctx context.Context, token string) error {
 	return withTx(s.db, ctx, func(tx *sql.Tx) error {
-		// 1. fetch the user against the token
 
+		// Fetch the user against the token
 		user, err := s.getUserFromInvitation(ctx, tx, token)
 		if err != nil {
 			return err
 		}
 
-		// 2. update the user
+		// Update the user
 		user.IsActive = true
 		if err := s.update(ctx, tx, user); err != nil {
 			return err
 		}
 
-		// 3. clear the invitation
+		// Clear the invitation
 		if err := s.deleteUserInvitations(ctx, tx, user.ID); err != nil {
 			return err
 		}
@@ -174,9 +174,8 @@ func (s *UserStore) getUserFromInvitation(ctx context.Context, tx *sql.Tx, token
 }
 
 func (s *UserStore) createUserInvitation(ctx context.Context, tx *sql.Tx, token string, exp time.Duration, userID int64) error {
-	query := `
-		INSERT INTO user_invitations (token, user_id, expiry) VALUES($1, $2, $3)
-`
+	query := `INSERT INTO user_invitations (token, user_id, expiry) VALUES($1, $2, $3)`
+
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
@@ -189,9 +188,7 @@ func (s *UserStore) createUserInvitation(ctx context.Context, tx *sql.Tx, token 
 }
 
 func (s *UserStore) update(ctx context.Context, tx *sql.Tx, user *User) error {
-	query := `
-		UPDATE users SET username = $1, email = $2, is_active = $3 WHERE id = $4
-`
+	query := `UPDATE users SET username = $1, email = $2, is_active = $3 WHERE id = $4`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()

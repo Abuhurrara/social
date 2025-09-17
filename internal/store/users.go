@@ -59,9 +59,9 @@ func (s *UserStore) Create(ctx context.Context, tx *sql.Tx, user *User) error {
 	).Scan(&user.ID, &user.CreatedAt)
 	if err != nil {
 		switch {
-		case err.Error() == `pq: duplicates key value violates unique constraint "user_email_key"`:
+		case err.Error() == `pq: duplicate key value violates unique constraint "users_email_key"`:
 			return ErrDuplicateEmail
-		case err.Error() == `pq: duplicates key value violates unique constraint "user_username_key"`:
+		case err.Error() == `pq: duplicate key value violates unique constraint "users_username_key"`:
 			return ErrDuplicateUsername
 		default:
 			return err
@@ -106,7 +106,7 @@ func (s *UserStore) CreateAndInvite(ctx context.Context, user *User, token strin
 		}
 
 		// Create the user invite.
-		if err := s.CreateUserInvitation(ctx, tx, token, invitationExp, user.ID); err != nil {
+		if err := s.createUserInvitation(ctx, tx, token, invitationExp, user.ID); err != nil {
 			return err
 		}
 
@@ -114,7 +114,7 @@ func (s *UserStore) CreateAndInvite(ctx context.Context, user *User, token strin
 	})
 }
 
-func (s *UserStore) CreateUserInvitation(ctx context.Context, tx *sql.Tx, token string, exp time.Duration, userID int64) error {
+func (s *UserStore) createUserInvitation(ctx context.Context, tx *sql.Tx, token string, exp time.Duration, userID int64) error {
 	query := `
 		INSERT INTO user_invitation (token, user_id, expiry) VALUES($1, $2, $3)
 `

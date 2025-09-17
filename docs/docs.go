@@ -730,6 +730,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_active": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 }

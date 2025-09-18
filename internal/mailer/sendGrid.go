@@ -2,8 +2,11 @@ package mailer
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"log"
+	"time"
 )
 
 type SendGridMailer struct {
@@ -37,5 +40,20 @@ func (m *SendGridMailer) Send(templateFile, username, email string, data any, is
 		},
 	})
 
-	response, err := m.client.Send(message)
+	for i := 0; i < maxRetries; i++ {
+		response, err := m.client.Send(message)
+		if err != nil {
+			log.Printf("Error sending email to %v, attempt %d of %d", email, i+1, maxRetries)
+			log.Printf("Error %v", err.Error())
+
+			// exponential backoff
+			time.Sleep(time.Second * time.Duration(i+1))
+			continue
+		}
+
+		log.Printf("Successfully sent email to %v, with status code %v", email, response.StatusCode)
+		return nil
+	}
+
+	return fmt.Errorf("could not send email to %v after %v retries", email, maxRetries)
 }

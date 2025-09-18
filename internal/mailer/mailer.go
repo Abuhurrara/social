@@ -1,7 +1,8 @@
 package mailer
 
 const (
-	FromName = "SocialNetwork"
+	FromName   = "SocialNetwork"
+	maxRetries = 3
 )
 
 type Client interface {

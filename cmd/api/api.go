@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Abuhurrara/social/internal/mailer"
 	"net/http"
 	"time"
 
@@ -18,6 +19,7 @@ type application struct {
 	config config
 	store  store.Storage
 	logger *zap.SugaredLogger
+	mailer mailer.Client
 }
 type config struct {
 	address string

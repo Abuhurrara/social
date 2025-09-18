@@ -22,11 +22,12 @@ type application struct {
 	mailer mailer.Client
 }
 type config struct {
-	address string
-	apiURL  string
-	db      dbConfig
-	env     string
-	mail    mailConfig
+	address     string
+	apiURL      string
+	db          dbConfig
+	env         string
+	mail        mailConfig
+	frontendURL string
 }
 
 type mailConfig struct {

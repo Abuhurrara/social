@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"html/template"
 	"log"
 	"time"
 )
@@ -24,19 +25,32 @@ func NewSendGrid(fromEmail, apiKey string) *SendGridMailer {
 	}
 }
 
-func (m *SendGridMailer) Send(templateFile, username, email string, data any, isSanbox bool) error {
+func (m *SendGridMailer) Send(templateFile, username, email string, data any, isSandbox bool) error {
 	from := mail.NewEmail(FromName, m.fromEmail)
 	to := mail.NewEmail(username, email)
 
+	tmpl, err := template.ParseFS(FS, "templates/"+templateFile)
+	if err != nil {
+		return err
+	}
+
 	subject := new(bytes.Buffer)
+	err = tmpl.ExecuteTemplate(subject, "subject", data)
+	if err != nil {
+		return err
+	}
 
 	body := new(bytes.Buffer)
+	err = tmpl.ExecuteTemplate(body, "body", data)
+	if err != nil {
+		return err
+	}
 
 	message := mail.NewSingleEmail(from, subject.String(), to, "", body.String())
 
 	message.SetMailSettings(&mail.MailSettings{
 		SandboxMode: &mail.Setting{
-			Enable: &isSanbox,
+			Enable: &isSandbox,
 		},
 	})
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Abuhurrara/social/internal/mailer"
 	"log"
 	"time"
 
@@ -48,7 +49,11 @@ func main() {
 		},
 		env: env.GetString("ENV", "development"),
 		mail: mailConfig{
-			exp: time.Hour * 24 * 3, // 3 days
+			exp:       time.Hour * 24 * 3, // 3 days
+			fromEmail: env.GetString("FROM_EMAIL", ""),
+			sendGrid: sendGridConfig{
+				apiKey: env.GetString("SENDGRID_API_KEY", ""),
+			},
 		},
 	}
 
@@ -67,10 +72,13 @@ func main() {
 
 	store := store.NewStorage(db)
 
+	mail := mailer.NewSendGrid(cfg.mail.sendGrid.apiKey, cfg.mail.fromEmail)
+
 	app := &application{
 		config: cfg,
 		store:  store,
 		logger: logger,
+		mailer: mail,
 	}
 
 	mux := app.mount()

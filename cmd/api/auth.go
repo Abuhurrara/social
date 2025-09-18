@@ -96,6 +96,13 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 
 	// TODO: send email and rollback if fails
 	if err = app.mailer.Send(mailer.UserWelcomeTemplate, user.Username, user.Email, vars, !isProdEnv); err != nil {
+		app.logger.Errorw("failed sending email", "error", err)
+
+		// Rollback user creation if email fails (SAGA Pattern)
+		if err := app.store.Users.Delete(ctx, user.ID); err != nil {
+			app.logger.Errorw("failed deleting user", "error", err)
+		}
+
 		app.internalServerError(w, r, err)
 		return
 	}

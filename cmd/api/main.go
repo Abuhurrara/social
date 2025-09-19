@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/Abuhurrara/social/internal/mailer"
 	"log"
 	"time"
+
+	"github.com/Abuhurrara/social/internal/mailer"
 
 	"go.uber.org/zap"
 
@@ -73,7 +74,7 @@ func main() {
 
 	store := store.NewStorage(db)
 
-	mail := mailer.NewSendGrid(cfg.mail.sendGrid.apiKey, cfg.mail.fromEmail)
+	mail := mailer.NewSendGrid(cfg.mail.fromEmail, cfg.mail.sendGrid.apiKey)
 
 	app := &application{
 		config: cfg,

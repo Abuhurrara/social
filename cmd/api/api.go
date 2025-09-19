@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/Abuhurrara/social/internal/mailer"
 	"net/http"
 	"time"
+
+	"github.com/Abuhurrara/social/internal/mailer"
 
 	"go.uber.org/zap"
 

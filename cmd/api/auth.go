@@ -4,8 +4,9 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"github.com/Abuhurrara/social/internal/mailer"
 	"net/http"
+
+	"github.com/Abuhurrara/social/internal/mailer"
 
 	"github.com/Abuhurrara/social/internal/store"
 	"github.com/google/uuid"

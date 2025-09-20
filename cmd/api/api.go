@@ -5,11 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Abuhurrara/social/internal/mailer"
-
 	"go.uber.org/zap"
 
 	"github.com/Abuhurrara/social/docs"
+	"github.com/Abuhurrara/social/internal/mailer"
 	"github.com/Abuhurrara/social/internal/store"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

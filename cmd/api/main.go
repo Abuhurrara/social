@@ -4,6 +4,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/Abuhurrara/social/internal/mailer"
+
 	"go.uber.org/zap"
 
 	"github.com/Abuhurrara/social/internal/db"
@@ -38,8 +40,9 @@ func main() {
 	}
 
 	cfg := config{
-		address: env.GetString("ADDR", ":8080"),
-		apiURL:  env.GetString("EXTERNAL_URL", "localhost:8080"),
+		address:     env.GetString("ADDR", ":8080"),
+		apiURL:      env.GetString("EXTERNAL_URL", "localhost:8080"),
+		frontendURL: env.GetString("FRONTEND_URL", "http://localhost:4000"),
 		db: dbConfig{
 			addr:         env.GetString("DB_ADDR", "postgres://admin:adminpassword@localhost/socialnetwork?sslmode=disable"),
 			maxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
@@ -48,7 +51,14 @@ func main() {
 		},
 		env: env.GetString("ENV", "development"),
 		mail: mailConfig{
-			exp: time.Hour * 24 * 3, // 3 days
+			exp:       time.Hour * 24 * 3, // 3 days
+			fromEmail: env.GetString("FROM_EMAIL", ""),
+			sendGrid: sendGridConfig{
+				apiKey: env.GetString("SENDGRID_API_KEY", ""),
+			},
+			mailTrap: mailTrapConfig{
+				apiKey: env.GetString("MAILTRAP_API_KEY", ""),
+			},
 		},
 	}
 
@@ -67,10 +77,19 @@ func main() {
 
 	store := store.NewStorage(db)
 
+	mail := mailer.NewSendGrid(cfg.mail.fromEmail, cfg.mail.sendGrid.apiKey)
+
+	// Uncomment if you want to use MailTrap.
+	//mailTrap, err := mailer.NewMailTrapClient(cfg.mail.fromEmail, cfg.mail.mailTrap.apiKey)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
 	app := &application{
 		config: cfg,
 		store:  store,
 		logger: logger,
+		mailer: mail,
 	}
 
 	mux := app.mount()

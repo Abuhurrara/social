@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/Abuhurrara/social/docs"
+	"github.com/Abuhurrara/social/internal/mailer"
 	"github.com/Abuhurrara/social/internal/store"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -18,17 +19,30 @@ type application struct {
 	config config
 	store  store.Storage
 	logger *zap.SugaredLogger
+	mailer mailer.Client
 }
 type config struct {
-	address string
-	apiURL  string
-	db      dbConfig
-	env     string
-	mail    mailConfig
+	address     string
+	apiURL      string
+	db          dbConfig
+	env         string
+	mail        mailConfig
+	frontendURL string
 }
 
 type mailConfig struct {
-	exp time.Duration
+	exp       time.Duration
+	fromEmail string
+	sendGrid  sendGridConfig
+	mailTrap  mailTrapConfig
+}
+
+type sendGridConfig struct {
+	apiKey string
+}
+
+type mailTrapConfig struct {
+	apiKey string
 }
 
 type dbConfig struct {

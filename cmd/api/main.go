@@ -56,6 +56,9 @@ func main() {
 			sendGrid: sendGridConfig{
 				apiKey: env.GetString("SENDGRID_API_KEY", ""),
 			},
+			mailTrap: mailTrapConfig{
+				apiKey: env.GetString("MAILTRAP_API_KEY", ""),
+			},
 		},
 	}
 
@@ -75,6 +78,12 @@ func main() {
 	store := store.NewStorage(db)
 
 	mail := mailer.NewSendGrid(cfg.mail.fromEmail, cfg.mail.sendGrid.apiKey)
+
+	// Uncomment if you want to use MailTrap.
+	//mailTrap, err := mailer.NewMailTrapClient(cfg.mail.fromEmail, cfg.mail.mailTrap.apiKey)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	app := &application{
 		config: cfg,

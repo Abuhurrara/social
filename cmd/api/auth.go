@@ -95,8 +95,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		ActivationURL: activationURL,
 	}
 
-	// TODO: send email and rollback if fails
-	if err = app.mailer.Send(mailer.UserWelcomeTemplate, user.Username, user.Email, vars, !isProdEnv); err != nil {
+	if _, err = app.mailer.Send(mailer.UserWelcomeTemplate, user.Username, user.Email, vars, !isProdEnv); err != nil {
 		app.logger.Errorw("failed sending email", "error", err)
 
 		// Rollback user creation if email fails (SAGA Pattern)

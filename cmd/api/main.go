@@ -77,18 +77,19 @@ func main() {
 
 	store := store.NewStorage(db)
 
-	//mail := mailer.NewSendGrid(cfg.mail.fromEmail, cfg.mail.sendGrid.apiKey)
+	mail := mailer.NewSendGrid(cfg.mail.fromEmail, cfg.mail.sendGrid.apiKey)
 
-	mailTrap, err := mailer.NewMailTrapClient(cfg.mail.fromEmail, cfg.mail.mailTrap.apiKey)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// Uncomment if you want to use MailTrap.
+	//mailTrap, err := mailer.NewMailTrapClient(cfg.mail.fromEmail, cfg.mail.mailTrap.apiKey)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	app := &application{
 		config: cfg,
 		store:  store,
 		logger: logger,
-		mailer: mailTrap,
+		mailer: mail,
 	}
 
 	mux := app.mount()

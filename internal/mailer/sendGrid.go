@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"log"
 	"time"
 
 	"github.com/sendgrid/sendgrid-go"
@@ -55,20 +54,17 @@ func (m *SendGridMailer) Send(templateFile, username, email string, data any, is
 		},
 	})
 
+	var retryErr error
 	for i := 0; i < maxRetries; i++ {
 		response, retryErr := m.client.Send(message)
 		if retryErr != nil {
-			log.Printf("Error sending email to %v, attempt %d of %d", email, i+1, maxRetries)
-			log.Printf("Error %v", err.Error())
-
 			// exponential backoff
 			time.Sleep(time.Second * time.Duration(i+1))
 			continue
 		}
 
-		log.Printf("Successfully sent email to %v, with status code %v", email, response.StatusCode)
 		return response.StatusCode, nil
 	}
 
-	return -1, fmt.Errorf("could not send email to %v after %v retries", email, maxRetries)
+	return -1, fmt.Errorf("failed to sent email after %v attempt, error: %v", maxRetries, retryErr)
 }

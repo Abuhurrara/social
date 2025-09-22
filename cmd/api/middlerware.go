@@ -14,21 +14,21 @@ func (app *application) BasicAuthMiddleware() func(http.Handler) http.Handler {
 			// read the auth header
 			authHeader := r.Header.Get("Authorization")
 			if authHeader == "" {
-				app.unauthorizedErrorResponse(w, r, fmt.Errorf("missing authorization header"))
+				app.unauthorizedBasicErrorResponse(w, r, fmt.Errorf("missing authorization header"))
 				return
 			}
 
 			// parse it -> get base 64
 			parts := strings.Split(authHeader, " ")
 			if len(parts) != 2 || parts[0] != "Basic" {
-				app.unauthorizedErrorResponse(w, r, fmt.Errorf("invalid authorization header"))
+				app.unauthorizedBasicErrorResponse(w, r, fmt.Errorf("invalid authorization header"))
 				return
 			}
 
 			// decode it
 			decode, err := base64.StdEncoding.DecodeString(parts[1])
 			if err != nil {
-				app.unauthorizedErrorResponse(w, r, err)
+				app.unauthorizedBasicErrorResponse(w, r, err)
 				return
 			}
 
@@ -38,7 +38,7 @@ func (app *application) BasicAuthMiddleware() func(http.Handler) http.Handler {
 
 			creds := strings.SplitN(string(decode), ":", 2)
 			if len(creds) != 2 || creds[0] != username || creds[1] != pass {
-				app.unauthorizedErrorResponse(w, r, fmt.Errorf("invalid credentials"))
+				app.unauthorizedBasicErrorResponse(w, r, fmt.Errorf("invalid credentials"))
 				return
 			}
 

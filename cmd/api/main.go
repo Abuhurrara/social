@@ -68,7 +68,7 @@ func main() {
 				password: env.GetString("AUTH_BASIC_PASSWORD", "admin"),
 			},
 			token: tokenConfig{
-				secret: env.GetString("AUTH_TOKEN_SECRET", ""),
+				secret: env.GetString("AUTH_TOKEN_SECRET", "example"),
 				exp:    time.Hour * 24 * 3, // 3 days
 				iss:    "socialNetwork",
 			},

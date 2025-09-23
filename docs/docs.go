@@ -68,6 +68,11 @@ const docTemplate = `{
         },
         "/health": {
             "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Healthcheck endpoint",
                 "produces": [
                     "application/json"

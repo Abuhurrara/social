@@ -191,6 +191,8 @@ paths:
           description: ok
           schema:
             type: string
+      security:
+      - BasicAuth: []
       summary: Healthcheck
       tags:
       - ops

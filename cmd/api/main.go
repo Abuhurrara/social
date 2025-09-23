@@ -4,6 +4,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/Abuhurrara/social/internal/auth"
+
 	"github.com/Abuhurrara/social/internal/mailer"
 
 	"go.uber.org/zap"
@@ -65,6 +67,11 @@ func main() {
 				username: env.GetString("AUTH_BASIC_USERNAME", "admin"),
 				password: env.GetString("AUTH_BASIC_PASSWORD", "admin"),
 			},
+			token: tokenConfig{
+				secret: env.GetString("AUTH_TOKEN_SECRET", ""),
+				exp:    time.Hour * 24 * 3, // 3 days
+				iss:    "socialNetwork",
+			},
 		},
 	}
 
@@ -72,7 +79,7 @@ func main() {
 	logger := zap.Must(zap.NewProduction()).Sugar()
 	defer logger.Sync()
 
-	//database
+	// Database
 	db, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
 	if err != nil {
 		logger.Fatal(err)
@@ -83,6 +90,7 @@ func main() {
 
 	store := store.NewStorage(db)
 
+	// Mailer
 	mail := mailer.NewSendGrid(cfg.mail.fromEmail, cfg.mail.sendGrid.apiKey)
 
 	// Uncomment if you want to use MailTrap.
@@ -91,11 +99,15 @@ func main() {
 	//	log.Fatal(err)
 	//}
 
+	// Authenticator
+	jwtAuthenticator := auth.NewJWTAuthenticator(cfg.auth.token.secret, cfg.auth.token.iss, cfg.auth.token.iss)
+
 	app := &application{
-		config: cfg,
-		store:  store,
-		logger: logger,
-		mailer: mail,
+		config:        cfg,
+		store:         store,
+		logger:        logger,
+		mailer:        mail,
+		authenticator: jwtAuthenticator,
 	}
 
 	mux := app.mount()

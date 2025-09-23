@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/Abuhurrara/social/docs"
+	"github.com/Abuhurrara/social/internal/auth"
 	"github.com/Abuhurrara/social/internal/mailer"
 	"github.com/Abuhurrara/social/internal/store"
 	"github.com/go-chi/chi/v5"
@@ -16,10 +17,11 @@ import (
 )
 
 type application struct {
-	config config
-	store  store.Storage
-	logger *zap.SugaredLogger
-	mailer mailer.Client
+	config        config
+	store         store.Storage
+	logger        *zap.SugaredLogger
+	mailer        mailer.Client
+	authenticator auth.Authenticator
 }
 type config struct {
 	address     string
@@ -33,6 +35,13 @@ type config struct {
 
 type authConfig struct {
 	basic basicConfig
+	token tokenConfig
+}
+
+type tokenConfig struct {
+	secret string
+	exp    time.Duration
+	iss    string
 }
 
 type basicConfig struct {

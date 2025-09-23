@@ -4,14 +4,12 @@ import (
 	"log"
 	"time"
 
-	"github.com/Abuhurrara/social/internal/auth"
-
-	"github.com/Abuhurrara/social/internal/mailer"
-
 	"go.uber.org/zap"
 
+	"github.com/Abuhurrara/social/internal/auth"
 	"github.com/Abuhurrara/social/internal/db"
 	"github.com/Abuhurrara/social/internal/env"
+	"github.com/Abuhurrara/social/internal/mailer"
 	"github.com/Abuhurrara/social/internal/store"
 	"github.com/joho/godotenv"
 )

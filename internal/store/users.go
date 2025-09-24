@@ -20,17 +20,17 @@ type User struct {
 	ID        int64    `json:"id"`
 	Username  string   `json:"name"`
 	Email     string   `json:"email"`
-	Password  Password `json:"-"`
+	Password  password `json:"-"`
 	CreatedAt string   `json:"created_at"`
 	IsActive  bool     `json:"is_active"`
 }
 
-type Password struct {
+type password struct {
 	text *string
 	hash []byte
 }
 
-func (p *Password) Set(text string) error {
+func (p *password) Set(text string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(text), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -40,6 +40,10 @@ func (p *Password) Set(text string) error {
 	p.hash = hash
 
 	return nil
+}
+
+func (p *password) Compare(text string) error {
+	return bcrypt.CompareHashAndPassword(p.hash, []byte(text))
 }
 
 type UserStore struct {

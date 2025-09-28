@@ -119,7 +119,6 @@ func (app *application) mount() http.Handler {
 
 			r.Group(func(r chi.Router) {
 				r.Use(app.AuthTokenMiddleware)
-				// /v1/users/feed
 				r.Get("/feed", app.getUserFeed)
 			})
 

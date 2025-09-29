@@ -97,8 +97,8 @@ func (app *application) mount() http.Handler {
 				r.Use(app.postContextMiddleware)
 
 				r.Get("/", app.getPostHandler)
-				r.Delete("/", app.deletePostHandler)
-				r.Patch("/", app.updatePostHandler)
+				r.Delete("/", app.CheckPostOwnership("admin", app.deletePostHandler))
+				r.Patch("/", app.CheckPostOwnership("moderator", app.updatePostHandler))
 				r.Post("/comments", app.createCommentHandler)
 			})
 		})
@@ -119,7 +119,6 @@ func (app *application) mount() http.Handler {
 
 			r.Group(func(r chi.Router) {
 				r.Use(app.AuthTokenMiddleware)
-				// /v1/users/feed
 				r.Get("/feed", app.getUserFeed)
 			})
 

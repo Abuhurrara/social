@@ -115,5 +115,8 @@ func (app *application) CheckPostOwnership(requiredRole string, next http.Handle
 }
 
 func (app *application) checkRolePrecedence(ctx context.Context, user *store.User, roleName string) (bool, error) {
-
+	role, err := app.store.Roles.GetByName(ctx, roleName)
+	if err != nil {
+		return false, err
+	}
 }

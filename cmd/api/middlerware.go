@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"github.com/Abuhurrara/social/internal/store"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/Abuhurrara/social/internal/store"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -104,7 +105,6 @@ func (app *application) CheckPostOwnership(requiredRole string, next http.Handle
 			return
 		}
 
-		// role precedence check
 		allowed, err := app.checkRolePrecedence(r.Context(), user, requiredRole)
 		if err != nil {
 			app.internalServerError(w, r, err)
@@ -115,6 +115,7 @@ func (app *application) CheckPostOwnership(requiredRole string, next http.Handle
 			app.forbiddenResponse(w, r)
 			return
 		}
+
 		next.ServeHTTP(w, r)
 	})
 }

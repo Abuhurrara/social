@@ -67,6 +67,10 @@ definitions:
         type: boolean
       name:
         type: string
+      role:
+        $ref: '#/definitions/store.Role'
+      role_id:
+        type: integer
       token:
         type: string
     type: object
@@ -141,6 +145,17 @@ definitions:
       version:
         type: integer
     type: object
+  store.Role:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      level:
+        type: integer
+      name:
+        type: string
+    type: object
   store.User:
     properties:
       created_at:
@@ -153,6 +168,10 @@ definitions:
         type: boolean
       name:
         type: string
+      role:
+        $ref: '#/definitions/store.Role'
+      role_id:
+        type: integer
     type: object
 info:
   contact:

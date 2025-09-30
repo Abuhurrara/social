@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Abuhurrara/social/internal/store/cache"
 	"net/http"
 	"time"
 
@@ -19,6 +20,7 @@ import (
 type application struct {
 	config        config
 	store         store.Storage
+	cacheStorage  cache.Storage
 	logger        *zap.SugaredLogger
 	mailer        mailer.Client
 	authenticator auth.Authenticator
@@ -31,6 +33,14 @@ type config struct {
 	mail        mailConfig
 	frontendURL string
 	auth        authConfig
+	redisCfg    redisConfig
+}
+
+type redisConfig struct {
+	addr    string
+	pw      string
+	db      int
+	enabled bool
 }
 
 type authConfig struct {

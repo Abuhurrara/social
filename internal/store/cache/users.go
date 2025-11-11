@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/Abuhurrara/social/internal/store"
 	"github.com/go-redis/redis/v8"
@@ -18,7 +19,9 @@ const UserExpTime = time.Minute
 func (s *UserStore) Get(ctx context.Context, userID int64) (*store.User, error) {
 	cacheKey := fmt.Sprintf("user-%v", userID)
 	data, err := s.rdb.Get(ctx, cacheKey).Result()
-	if err != nil {
+	if errors.Is(err, redis.Nil) {
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
 

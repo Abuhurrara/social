@@ -97,12 +97,14 @@ func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 }
 
 func (app *application) getUser(ctx context.Context, userID int64) (*store.User, error) {
+	app.logger.Infow("cache hit", "key", "user", "userID", userID)
 	user, err := app.cacheStorage.Users.Get(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
 
 	if user == nil {
+		app.logger.Infow("fetching from DB", "userID", userID)
 		user, err = app.store.Users.GetByID(ctx, userID)
 		if err != nil {
 			return nil, err

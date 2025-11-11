@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/Abuhurrara/social/internal/store"
 	"github.com/go-redis/redis/v8"
-	"time"
 )
 
 type UserStore struct {

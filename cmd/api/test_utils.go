@@ -12,12 +12,15 @@ import (
 	"go.uber.org/zap"
 )
 
-func NewTestApplication(t *testing.T) *application {
+func newTestApplication(t *testing.T, cfg config) *application {
 	t.Helper()
 
 	logger := zap.NewNop().Sugar()
+	// Uncomment to enable logs
+	// logger := zap.Must(zap.NewProduction()).Sugar()
 	mockStore := store.NewMockStore()
 	mockCacheStore := cache.NewMockStore()
+
 	testAuth := &auth.TestAuthenticator{}
 
 	return &application{
@@ -25,6 +28,7 @@ func NewTestApplication(t *testing.T) *application {
 		store:         mockStore,
 		cacheStorage:  mockCacheStore,
 		authenticator: testAuth,
+		config:        cfg,
 	}
 }
 

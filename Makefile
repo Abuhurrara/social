@@ -3,6 +3,10 @@ include .env
 DB_MIGRATOR_ADDR ?= $(DB_ADDR) # Read from env
 MIGRATION_PATH = ./cmd/migrate/migrations
 
+.PHONY: test
+test:
+	@go test -v ./...
+
 .PHONY: migrate-create
 migration:
 	@migrate create --seq --ext sql -dir $(MIGRATION_PATH) $(filter-out $@,$(MAKECMDGOALS))

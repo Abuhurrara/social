@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/Abuhurrara/social/internal/ratelimiter"
 	"log"
 	"time"
+
+	"github.com/Abuhurrara/social/internal/ratelimiter"
 
 	"github.com/Abuhurrara/social/internal/store/cache"
 	"github.com/go-redis/redis/v8"

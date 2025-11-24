@@ -4,24 +4,24 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/Abuhurrara/social/internal/env"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/Abuhurrara/social/internal/ratelimiter"
-
-	"github.com/Abuhurrara/social/internal/store/cache"
-
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"go.uber.org/zap"
 
 	"github.com/Abuhurrara/social/docs"
 	"github.com/Abuhurrara/social/internal/auth"
 	"github.com/Abuhurrara/social/internal/mailer"
+	"github.com/Abuhurrara/social/internal/ratelimiter"
 	"github.com/Abuhurrara/social/internal/store"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/Abuhurrara/social/internal/store/cache"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
@@ -98,6 +98,14 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{env.GetString("CORS_ALLOWED_ORIGIN", "http://localhost:5174")},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 	if app.config.rateLimiter.Enabled {
 		r.Use(app.RateLimiterMiddleware)
 	}

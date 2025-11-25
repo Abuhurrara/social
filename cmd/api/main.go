@@ -4,6 +4,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/Abuhurrara/social/internal/ratelimiter"
+
 	"github.com/Abuhurrara/social/internal/store/cache"
 	"github.com/go-redis/redis/v8"
 
@@ -80,6 +82,11 @@ func main() {
 				iss:    "socialNetwork",
 			},
 		},
+		rateLimiter: ratelimiter.Config{
+			RequestsPerTimeFrame: env.GetInt("RATELIMITER_REQUESTS_COUNT", 20),
+			TimeFrame:            time.Second * 5,
+			Enabled:              env.GetBool("RATE_LIMITER_ENABLED", true),
+		},
 	}
 
 	// logger
@@ -100,6 +107,12 @@ func main() {
 		rdb = cache.NewRedisClient(cfg.redisCfg.addr, cfg.redisCfg.pw, cfg.redisCfg.db)
 		logger.Info("Redis cache connection established")
 	}
+
+	// Rate limiter
+	rateLimiter := ratelimiter.NewFixedWindowLimiter(
+		cfg.rateLimiter.RequestsPerTimeFrame,
+		cfg.rateLimiter.TimeFrame,
+	)
 
 	store := store.NewStorage(db)
 	cacheStorage := cache.NewRedisStorage(rdb)
@@ -123,6 +136,7 @@ func main() {
 		logger:        logger,
 		mailer:        mail,
 		authenticator: jwtAuthenticator,
+		rateLimiter:   rateLimiter,
 	}
 
 	mux := app.mount()

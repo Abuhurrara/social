@@ -8,11 +8,11 @@ import (
 	"github.com/lib/pq"
 )
 
-type follower struct {
-	UserId     int64 `json:"user_id"`
-	FollowerID int64 `json:"follower_id"`
-	CreatedAt  int64 `json:"created_at"`
-}
+//type Follower struct {
+//	UserId     int64 `json:"user_id"`
+//	FollowerID int64 `json:"follower_id"`
+//	CreatedAt  int64 `json:"created_at"`
+//}
 
 type FollowerStore struct {
 	db *sql.DB

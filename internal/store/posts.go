@@ -38,11 +38,11 @@ func (s *PostStore) GetUserFeed(ctx context.Context, userId int64, fq PaginatedF
 		FROM posts p
 		LEFT JOIN comments c ON c.post_id = p.id
 		LEFT JOIN users u ON p.user_id = u.id
-		JOIN followers f ON f.follower_id = p.user_id OR p.user_id = $1
+		LEFT JOIN followers f ON f.follower_id = $1 AND f.user_id = p.user_id
 		WHERE 
-			f.user_id = $1 AND
-			(p.title ILIKE '%' || $4 || '%' OR p.content ILIKE '%' || $4 || '%') AND
-			(p.tags @> $5 OR $5 = '{}')
+			(f.user_id IS NOT NULL OR p.user_id = $1) -- include your own posts
+			AND ($4 = '' OR p.title ILIKE '%' || $4 || '%' OR p.content ILIKE '%' || $4 || '%')
+			AND (array_length($5::varchar[], 1) IS NULL OR p.tags @> $5::varchar[])
 		GROUP BY p.id, u.username
 		ORDER BY p.created_at ` + fq.Sort + `
 		LIMIT $2 OFFSET $3

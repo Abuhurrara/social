@@ -93,6 +93,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	activationURL := fmt.Sprintf("%s/confirm/%s", app.config.frontendURL, plainToken)
 
 	isProdEnv := app.config.env == "production"
+	fmt.Printf("DEBUG: Environment: %s, isProdEnv: %v, Sandbox mode: %v\n", app.config.env, isProdEnv, !isProdEnv)
 	vars := struct {
 		Username      string
 		ActivationURL string

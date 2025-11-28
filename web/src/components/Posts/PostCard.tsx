@@ -47,7 +47,7 @@ const PostCard: React.FC<PostCardProps> = ({
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">{post.user?.name || 'Unknown User'}</h3>
-              <p className="text-sm text-gray-500">{formatRelativeTime(post.created_at)}</p>
+              <p className="text-sm text-gray-500">{formatRelativeTime(post?.created_at ?? '')}</p>
             </div>
           </div>
           
@@ -113,9 +113,9 @@ const PostCard: React.FC<PostCardProps> = ({
             </span>
           </Link>
 
-          {post.updated_at !== post.created_at && (
+          {post?.updated_at !== post?.created_at && (
             <span className="text-xs text-gray-400">
-              Updated {formatRelativeTime(post.updated_at)}
+              {/*Updated {formatRelativeTime(post?.updated_at ?? "")}*/}
             </span>
           )}
         </div>

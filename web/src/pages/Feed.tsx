@@ -162,7 +162,7 @@ const Feed: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-6">
-            {posts.map((post) => (
+            {posts?.map((post) => (
               <PostCard
                 key={post.id}
                 post={post}

@@ -98,7 +98,7 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-// UnfollowUser gdoc
+// UnfollowUser godoc
 //
 //	@Summary		Unfollow a user
 //	@Description	Unfollow a user by ID
